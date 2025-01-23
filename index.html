@@ -6,7 +6,7 @@
     <title>VPN by Romanov</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #1e3c72, #2a5298);
             color: #fff;
             margin: 0;
@@ -19,7 +19,7 @@
         .container {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
-            padding: 30px;
+            padding: 20px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -30,35 +30,10 @@
         h1 {
             font-size: 24px;
             margin-bottom: 10px;
-            font-weight: bold;
-        }
-        .subscription {
-            font-size: 18px;
-            color: #a8dadc;
-            margin-bottom: 20px;
-        }
-        .progress-container {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            padding: 10px;
-            margin-bottom: 20px;
-        }
-        .progress-bar {
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-            height: 20px;
-            overflow: hidden;
-            position: relative;
-        }
-        .progress {
-            background: linear-gradient(90deg, #76c7c0, #4a90e2);
-            height: 100%;
-            border-radius: 10px;
-            transition: width 0.5s ease;
         }
         .stats {
-            font-size: 16px;
-            margin-bottom: 10px;
+            font-size: 18px;
+            margin-bottom: 20px;
         }
         .stats span {
             font-weight: bold;
@@ -68,44 +43,19 @@
             font-size: 14px;
             color: rgba(255, 255, 255, 0.7);
         }
-        .button {
-            background: linear-gradient(90deg, #76c7c0, #4a90e2);
-            border: none;
-            border-radius: 10px;
-            color: #fff;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: background 0.3s ease;
-        }
-        .button:hover {
-            background: linear-gradient(90deg, #4a90e2, #76c7c0);
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>VPN by Romanov</h1>
-        <p class="subscription">БЕСПЛАТНАЯ ПОДПИСКА</p>
-        <div class="progress-container">
-            <div class="progress-bar">
-                <div class="progress" id="progress"></div>
-            </div>
-        </div>
         <div class="stats">
             Потрачено: <span id="used-gb">0</span> ГБ<br>
             Доступно: <span id="remaining-gb">0</span> ГБ
         </div>
         <p class="timestamp" id="timestamp">Данные на 00:00, 1 января</p>
-        <button class="button" onclick="refreshData()">Обновить данные</button>
     </div>
 
     <script>
-        // Получаем данные от Telegram
-        const tg = window.Telegram.WebApp;
-        tg.expand();  // Разворачиваем приложение на весь экран
-
         // Получаем параметры из URL
         const urlParams = new URLSearchParams(window.location.search);
         const userId = urlParams.get('user_id');  // ID пользователя
@@ -113,7 +63,7 @@
         // Функция для получения данных от бота
         async function fetchData() {
             try {
-                const response = await fetch(`https://ваш_домен/bot_api?user_id=${userId}`);
+                const response = await fetch(`https://krolik42.github.io/romanov/bot_api?user_id=${userId}`);
                 const data = await response.json();
                 return data;
             } catch (error) {
@@ -129,18 +79,21 @@
                 const usedGB = data.used_gb;
                 const totalGB = data.total_gb;
                 const remainingGB = totalGB - usedGB;
-                const percent = (usedGB / totalGB) * 100;
 
-                document.getElementById('progress').style.width = `${percent}%`;
+                // Обновляем данные на странице
                 document.getElementById('used-gb').innerText = usedGB.toFixed(2);
                 document.getElementById('remaining-gb').innerText = remainingGB.toFixed(2);
-                document.getElementById('timestamp').innerText = `Данные на ${new Date().toLocaleTimeString()}`;
-            }
-        }
 
-        // Функция для обновления данных
-        function refreshData() {
-            updateUI();
+                // Обновляем дату
+                const now = new Date();
+                const formattedDate = now.toLocaleString('ru-RU', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    day: '2-digit',
+                    month: 'long'
+                });
+                document.getElementById('timestamp').innerText = `Данные на ${formattedDate}`;
+            }
         }
 
         // Автоматическое обновление данных каждые 5 секунд

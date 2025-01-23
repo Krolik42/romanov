@@ -6,48 +6,99 @@
     <title>VPN Окно в Европу</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
-            padding: 20px;
-            text-align: center;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
         .container {
-            background-color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 350px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .subscription {
+            font-size: 18px;
+            color: #a8dadc;
+            margin-bottom: 20px;
+        }
+        .progress-container {
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 300px;
-            margin: 0 auto;
+            padding: 10px;
+            margin-bottom: 20px;
         }
         .progress-bar {
-            background-color: #e0e0e0;
+            background: rgba(255, 255, 255, 0.3);
             border-radius: 10px;
             height: 20px;
-            margin: 20px 0;
             overflow: hidden;
+            position: relative;
         }
         .progress {
-            background-color: #76c7c0;
+            background: linear-gradient(90deg, #76c7c0, #4a90e2);
             height: 100%;
             border-radius: 10px;
+            transition: width 0.5s ease;
         }
         .stats {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .stats span {
+            font-weight: bold;
+            color: #76c7c0;
+        }
+        .timestamp {
             font-size: 14px;
-            margin-top: 10px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .button {
+            background: linear-gradient(90deg, #76c7c0, #4a90e2);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.3s ease;
+        }
+        .button:hover {
+            background: linear-gradient(90deg, #4a90e2, #76c7c0);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>VPN Окно в Европу</h2>
-        <p>БЕСПЛАТНАЯ ПОДПИСКА</p>
-        <p>Мое подключение</p>
-        <div class="progress-bar">
-            <div class="progress" id="progress"></div>
+        <h1>VPN Окно в Европу</h1>
+        <p class="subscription">БЕСПЛАТНАЯ ПОДПИСКА</p>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
         </div>
-        <div class="stats" id="stats"></div>
-        <p id="timestamp"></p>
+        <div class="stats">
+            Потрачено: <span id="used-gb">0</span> ГБ<br>
+            Доступно: <span id="remaining-gb">0</span> ГБ
+        </div>
+        <p class="timestamp" id="timestamp">Данные на 00:00, 1 января</p>
+        <button class="button" onclick="refreshData()">Обновить данные</button>
     </div>
 
     <script>
@@ -57,14 +108,29 @@
 
         // Получаем параметры из URL
         const urlParams = new URLSearchParams(window.location.search);
-        const usedGB = parseFloat(urlParams.get('used_gb')) || 7;  // Пример данных
-        const totalGB = parseFloat(urlParams.get('total_gb')) || 25;  // Пример данных
-        const percent = (usedGB / totalGB) * 100;
+        let usedGB = parseFloat(urlParams.get('used_gb')) || 7;  // Пример данных
+        let totalGB = parseFloat(urlParams.get('total_gb')) || 25;  // Пример данных
+        let remainingGB = totalGB - usedGB;
 
         // Обновляем прогресс-бар и статистику
-        document.getElementById('progress').style.width = `${percent}%`;
-        document.getElementById('stats').innerText = `В этом месяце потрачено ${usedGB} Гб из ${totalGB} Гб`;
-        document.getElementById('timestamp').innerText = `Данные на ${new Date().toLocaleTimeString()}`;
+        function updateUI() {
+            const percent = (usedGB / totalGB) * 100;
+            document.getElementById('progress').style.width = `${percent}%`;
+            document.getElementById('used-gb').innerText = usedGB.toFixed(2);
+            document.getElementById('remaining-gb').innerText = remainingGB.toFixed(2);
+            document.getElementById('timestamp').innerText = `Данные на ${new Date().toLocaleTimeString()}`;
+        }
+
+        // Функция для обновления данных (имитация)
+        function refreshData() {
+            // Здесь можно добавить запрос к API для получения новых данных
+            usedGB += 1;  // Пример: увеличиваем потраченный трафик
+            remainingGB = totalGB - usedGB;
+            updateUI();
+        }
+
+        // Инициализация
+        updateUI();
     </script>
 </body>
 </html>
